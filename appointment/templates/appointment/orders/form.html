@@ -1,0 +1,11 @@
+{% extends "appointment/base.html" %}
+{% block title %}{{ title }}{% endblock %}{% block page_title %}{{ title }}{% endblock %}
+{% block content %}
+<div class="card"><div class="card-body">
+    <form method="post">{% csrf_token %}
+        {% for field in form %}<div class="mb-3">{{ field.label_tag }}{{ field }}{% if field.errors %}<div class="text-danger small">{{ field.errors }}</div>{% endif %}</div>{% endfor %}
+        <button type="submit" class="btn btn-primary">保存</button>
+        <a href="{% url "order_list" %}" class="btn btn-secondary">取消</a>
+    </form>
+</div></div>
+{% endblock %}

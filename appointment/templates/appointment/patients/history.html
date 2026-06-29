@@ -1,0 +1,14 @@
+{% extends "appointment/base.html" %}{% load clinic_tags %}
+{% block title %}{{ patient.name }} - 就诊历史{% endblock %}{% block page_title %}{{ patient.name }} - 就诊历史{% endblock %}
+{% block content %}
+<div class="card mb-3"><div class="card-body">
+    <p><strong>姓名：</strong>{{ patient.name }} | <strong>性别：</strong>{% if patient.gender == 1 %}男{% else %}女{% endif %} | <strong>手机：</strong>{{ patient.phone }}</p>
+</div></div>
+<div class="card"><div class="card-header">预约记录</div><div class="card-body">
+    <table class="table table-striped"><thead><tr><th>日期</th><th>医生</th><th>时间</th><th>状态</th></tr></thead>
+    <tbody>{% for a in appointments %}<tr><td>{{ a.appointment_date }}</td><td>{{ a.doctor.name }}</td><td>{{ a.appointment_time|time:"H:i" }}</td><td>{% status_badge a.status %}</td></tr>{% empty %}<tr><td colspan="4" class="text-center text-muted">暂无预约记录</td></tr>{% endfor %}</tbody></table>
+</div></div>
+<div class="card mt-3"><div class="card-header">病历记录</div><div class="card-body">
+    {% for r in medical_records %}<div class="border-bottom mb-3 pb-3"><p><strong>就诊时间：</strong>{{ r.created_at|date:"Y-m-d H:i" }} | <strong>医生：</strong>{{ r.appointment.doctor.name }}</p><p><strong>诊断：</strong>{{ r.diagnosis }}</p><p><strong>处方：</strong>{{ r.prescription|default:"无" }}</p></div>{% empty %}<p class="text-muted">暂无病历记录</p>{% endfor %}
+</div></div>
+{% endblock %}

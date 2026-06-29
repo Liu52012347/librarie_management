@@ -1,0 +1,24 @@
+{% extends "appointment/base.html" %}{% load static %}{% load clinic_tags %}
+{% block title %}仪表盘 - 云诊所管理系统{% endblock %}
+{% block page_title %}仪表盘{% endblock %}
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-3"><div class="stat-card stat-blue"><div class="number">{{ total_today }}</div><div class="label">今日预约总数</div></div></div>
+    <div class="col-md-3"><div class="stat-card stat-orange"><div class="number">{{ pending_count }}</div><div class="label">待就诊数量</div></div></div>
+    <div class="col-md-3"><div class="stat-card stat-green"><div class="number">&yen;{{ income_today|floatformat:0 }}</div><div class="label">今日收入总额</div></div></div>
+    <div class="col-md-3"><div class="stat-card stat-purple"><div class="number">{{ new_patients }}</div><div class="label">新增患者</div></div></div>
+</div>
+<div class="row">
+    <div class="col-md-8"><div class="card"><div class="card-header">近7天预约趋势</div><div class="card-body"><div id="trendChart" style="height:300px;"></div></div></div></div>
+    <div class="col-md-4"><div class="card"><div class="card-header">各科室预约占比</div><div class="card-body"><div id="deptChart" style="height:300px;"></div></div></div></div>
+</div>
+<div class="card mt-3"><div class="card-header">待处理预约</div><div class="card-body"><table class="table table-striped table-hover"><thead><tr><th>患者</th><th>医生</th><th>时间</th><th>状态</th></tr></thead><tbody>{% for a in recent_appts %}<tr><td>{{ a.patient.name }}</td><td>{{ a.doctor.name }}</td><td>{{ a.appointment_time|time:"H:i" }}</td><td>{% status_badge a.status %}</td></tr>{% empty %}<tr><td colspan="4" class="text-center text-muted">暂无待处理预约</td></tr>{% endfor %}</tbody></table></div></div>
+{% endblock %}
+{% block extra_js %}
+<script>
+var trendChart = echarts.init(document.getElementById("trendChart"));
+trendChart.setOption({xAxis:{type:"category",data:{{ trend_labels|safe }}},yAxis:{type:"value"},series:[{data:{{ trend_data|safe }},type:"line",smooth:true,lineStyle:{color:"#1890ff"},areaStyle:{color:"rgba(24,144,255,0.1)"}}],tooltip:{trigger:"axis"},grid:{left:"3%",right:"4%",bottom:"3%",containLabel:true}});
+var deptChart = echarts.init(document.getElementById("deptChart"));
+deptChart.setOption({series:[{type:"pie",radius:["40%","70%"],data:{{ dept_data|safe }},label:{show:true,formatter:"{b}: {c}"},emphasis:{itemStyle:{shadowBlur:10,shadowOffsetX:0,shadowColor:"rgba(0,0,0,0.5)"}}}],tooltip:{trigger:"item"}});
+</script>
+{% endblock %}

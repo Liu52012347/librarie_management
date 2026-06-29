@@ -1,0 +1,23 @@
+{% extends "appointment/base.html" %}
+{% block title %}系统设置{% endblock %}{% block page_title %}系统设置{% endblock %}
+{% block content %}
+<div class="card mb-3">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <span>科室管理</span>
+        <a href="{% url "department_add" %}" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg"></i> 新增科室</a>
+    </div>
+    <div class="card-body">
+        <table class="table table-striped">
+            <thead><tr><th>名称</th><th>创建时间</th><th>操作</th></tr></thead>
+            <tbody>{% for d in departments %}<tr><td>{{ d.name }}</td><td>{{ d.created_at|date:"Y-m-d" }}</td><td class="action-btns"><a href="{% url "department_edit" d.id %}" class="btn btn-sm btn-outline-primary">编辑</a><a href="{% url "department_delete" d.id %}" class="btn btn-sm btn-outline-danger" onclick="return confirm(‘确认删除？’)">删除</a></td></tr>{% empty %}<tr><td colspan="3" class="text-center text-muted">暂无科室</td></tr>{% endfor %}</tbody>
+        </table>
+    </div>
+</div>
+<div class="card">
+    <div class="card-header">账号管理</div>
+    <div class="card-body">
+        <p>当前用户：<strong>{{ user.username }}</strong></p>
+        <a href="{% url "password_change" %}" class="btn btn-outline-primary">修改密码</a>
+    </div>
+</div>
+{% endblock %}

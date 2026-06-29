@@ -1,0 +1,11 @@
+{% extends "appointment/base.html" %}
+{% block title %}删除医生{% endblock %}{% block page_title %}删除医生{% endblock %}
+{% block content %}
+<div class="card"><div class="card-body text-center">
+    <p>确认将医生 <strong>{{ doctor.name }}</strong> 设为离职状态？</p>
+    <form method="post">{% csrf_token %}
+        <button type="submit" class="btn btn-danger">确认离职</button>
+        <a href="{% url "doctor_list" %}" class="btn btn-secondary">取消</a>
+    </form>
+</div></div>
+{% endblock %}

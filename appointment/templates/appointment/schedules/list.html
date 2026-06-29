@@ -1,0 +1,21 @@
+{% extends "appointment/base.html" %}{% load clinic_tags %}
+{% block title %}排班管理{% endblock %}{% block page_title %}排班管理{% endblock %}
+{% block content %}
+<div class="card"><div class="card-body">
+    <table class="table table-bordered table-hover">
+        <thead><tr><th style="min-width:100px;">医生</th>{% for k,v in week_days %}<th class="text-center">{{ v }}</th>{% endfor %}</tr></thead>
+        <tbody>{% for row in schedule_rows %}<tr><td><strong>{{ row.doctor.name }}</strong><br><small class="text-muted">{{ row.doctor.department.name }}</small></td>{% for wk,wn in week_days %}{% with skey=wk|stringformat:"s" %}{% with s=row|get_item:skey %}<td class="text-center" style="cursor:pointer;" onclick="openSchedule({{ row.doctor.id }},{{ wk }},'{{ row.doctor.name }}')">{% if s %}{% if s.is_off %}<span class="badge bg-secondary">休息</span>{% else %}<small>{{ s.start_time|time:"H:i" }}<br>{{ s.end_time|time:"H:i" }}<br><span class="text-muted">最多{{ s.max_patients }}人</span></small>{% endif %}{% else %}<small class="text-muted">-</small>{% endif %}</td>{% endwith %}{% endwith %}{% endfor %}</tr>{% empty %}<tr><td colspan="8" class="text-center text-muted">暂无医生</td></tr>{% endfor %}</tbody>
+    </table>
+</div></div>
+<div class="modal fade" id="scheduleModal"><div class="modal-dialog"><div class="modal-content"><form method="post">{% csrf_token %}<div class="modal-header"><h5 class="modal-title">编辑排班</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><input type="hidden" name="doctor" id="sDocId"><input type="hidden" name="week_day" id="sWeekDay"><div class="mb-3"><label class="form-label">医生</label><input type="text" id="sDocName" class="form-control" readonly></div><div class="mb-3"><div class="form-check"><input type="checkbox" class="form-check-input" name="is_off" id="sIsOff"><label class="form-check-label" for="sIsOff">休息</label></div></div><div id="sTimeFields"><div class="row"><div class="col"><div class="mb-3"><label class="form-label">上班时间</label><input type="time" name="start_time" class="form-control" value="08:00"></div></div><div class="col"><div class="mb-3"><label class="form-label">下班时间</label><input type="time" name="end_time" class="form-control" value="17:00"></div></div></div><div class="mb-3"><label class="form-label">最大接诊人数</label><input type="number" name="max_patients" class="form-control" value="20" min="1"></div></div></div><div class="modal-footer"><button type="submit" class="btn btn-primary">保存</button><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button></div></form></div></div></div>
+{% endblock %}
+{% block extra_js %}
+<script>
+function openSchedule(docId, weekDay, docName) {
+    document.getElementById("sDocId").value = docId;
+    document.getElementById("sWeekDay").value = weekDay;
+    document.getElementById("sDocName").value = docName;
+    new bootstrap.Modal(document.getElementById("scheduleModal")).show();
+}
+</script>
+{% endblock %}

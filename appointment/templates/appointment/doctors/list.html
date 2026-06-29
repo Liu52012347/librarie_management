@@ -1,0 +1,21 @@
+{% extends "appointment/base.html" %}
+{% block title %}医生管理{% endblock %}{% block page_title %}医生管理{% endblock %}
+{% block content %}
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <span>医生列表 ({{ total }}人)</span>
+        <a href="{% url "doctor_add" %}" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg"></i> 新增医生</a>
+    </div>
+    <div class="card-body">
+        <form class="row mb-3" method="get">
+            <div class="col-md-4"><input type="text" name="q" class="form-control" placeholder="搜索姓名/电话" value="{{ q }}"></div>
+            <div class="col-md-2"><button type="submit" class="btn btn-outline-primary">搜索</button></div>
+        </form>
+        <table class="table table-striped table-hover">
+            <thead><tr><th>姓名</th><th>科室</th><th>职称</th><th>电话</th><th>状态</th><th>操作</th></tr></thead>
+            <tbody>{% for d in doctors %}<tr><td>{{ d.name }}</td><td>{{ d.department.name }}</td><td>{{ d.title }}</td><td>{{ d.phone }}</td><td>{% if d.status == 1 %}<span class="badge bg-success">在职</span>{% else %}<span class="badge bg-secondary">离职</span>{% endif %}</td><td class="action-btns"><a href="{% url "doctor_edit" d.id %}" class="btn btn-sm btn-outline-primary">编辑</a><a href="{% url "doctor_delete" d.id %}" class="btn btn-sm btn-outline-danger">删除</a></td></tr>{% empty %}<tr><td colspan="6" class="text-center text-muted">暂无数据</td></tr>{% endfor %}</tbody>
+        </table>
+        {% if total_pages > 1 %}<nav><ul class="pagination pagination-sm">{% for p in total_pages %}<li class="page-item {% if p == page %}active{% endif %}"><a class="page-link" href="?page={{ p }}&q={{ q }}">{{ p }}</a></li>{% endfor %}</ul></nav>{% endif %}
+    </div>
+</div>
+{% endblock %}

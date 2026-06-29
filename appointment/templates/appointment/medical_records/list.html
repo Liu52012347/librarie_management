@@ -1,0 +1,21 @@
+{% extends "appointment/base.html" %}{% load clinic_tags %}
+{% block title %}病历管理{% endblock %}{% block page_title %}病历管理{% endblock %}
+{% block content %}
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <span>病历列表 ({{ total }}条)</span>
+        <a href="{% url "medical_record_add" %}" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg"></i> 创建病历</a>
+    </div>
+    <div class="card-body">
+        <form class="row mb-3" method="get">
+            <div class="col-md-4"><input type="text" name="q" class="form-control" placeholder="搜索患者/医生" value="{{ q }}"></div>
+            <div class="col-md-2"><button type="submit" class="btn btn-outline-primary">搜索</button></div>
+        </form>
+        <table class="table table-striped table-hover">
+            <thead><tr><th>患者</th><th>医生</th><th>诊断</th><th>就诊时间</th><th>操作</th></tr></thead>
+            <tbody>{% for r in records %}<tr><td>{{ r.appointment.patient.name }}</td><td>{{ r.appointment.doctor.name }}</td><td>{{ r.diagnosis|truncatechars:30 }}</td><td>{{ r.created_at|date:"Y-m-d H:i" }}</td><td class="action-btns"><a href="{% url "medical_record_edit" r.id %}" class="btn btn-sm btn-outline-primary">编辑</a></td></tr>{% empty %}<tr><td colspan="5" class="text-center text-muted">暂无数据</td></tr>{% endfor %}</tbody>
+        </table>
+        {% if total_pages > 1 %}<nav><ul class="pagination pagination-sm">{% for p in page_range %}<li class="page-item {% if p == page %}active{% endif %}"><a class="page-link" href="?page={{ p }}&q={{ q }}">{{ p }}</a></li>{% endfor %}</ul></nav>{% endif %}
+    </div>
+</div>
+{% endblock %}
