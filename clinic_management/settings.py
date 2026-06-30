@@ -10,7 +10,15 @@ SECRET_KEY = "django-insecure-clinic-mgmt-dev-key-2026"
 
 DEBUG = True
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = [
+    'librariemanagement-production.up.railway.app',
+    '127.0.0.1',
+    'localhost'
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://librariemanagement-production.up.railway.app'
+]
 
 INSTALLED_APPS = [
     "django.contrib.admin",
